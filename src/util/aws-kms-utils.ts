@@ -7,16 +7,17 @@ import { AwsKmsSignerCredentials } from "../index";
 /* this asn1.js library has some funky things going on */
 /* eslint-disable func-names */
 
-const EcdsaSigAsnParse: { decode: (asnStringBuffer: Buffer, format: "der") => { r: BN; s: BN } } = asn1.define(
-  "EcdsaSig",
-  function (this: any) {
+const EcdsaSigAsnParse: { decode: (asnStringBuffer: Buffer, format: "der") => { r: BN; s: BN } } =
+  asn1.define("EcdsaSig", function (this: any) {
     // parsing this according to https://tools.ietf.org/html/rfc3279#section-2.2.3
     this.seq().obj(this.key("r").int(), this.key("s").int());
-  }
-);
+  });
 const EcdsaPubKey = asn1.define("EcdsaPubKey", function (this: any) {
   // parsing this according to https://tools.ietf.org/html/rfc5480#section-2
-  this.seq().obj(this.key("algo").seq().obj(this.key("a").objid(), this.key("b").objid()), this.key("pubKey").bitstr());
+  this.seq().obj(
+    this.key("algo").seq().obj(this.key("a").objid(), this.key("b").objid()),
+    this.key("pubKey").bitstr(),
+  );
 });
 /* eslint-enable func-names */
 
@@ -73,7 +74,10 @@ export function findEthereumSig(signature: Buffer) {
   return { r, s: s.gt(secp256k1halfN) ? secp256k1N.sub(s) : s };
 }
 
-export async function requestKmsSignature(plaintext: Buffer, kmsCredentials: AwsKmsSignerCredentials) {
+export async function requestKmsSignature(
+  plaintext: Buffer,
+  kmsCredentials: AwsKmsSignerCredentials,
+) {
   const signature = await sign(plaintext, kmsCredentials);
   if (signature.$response.error || signature.Signature === undefined) {
     throw new Error(`AWS KMS call failed with: ${signature.$response.error}`);
