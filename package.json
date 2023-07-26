@@ -23,6 +23,7 @@
   "types": "dist/ts/src/index.d.ts",
   "keywords": [],
   "dependencies": {
+    "@aws-sdk/client-kms": "3.378.0",
     "@types/node": "20.4.5",
     "asn1.js": "5.4.1",
     "aws-sdk": "2.922.0",
