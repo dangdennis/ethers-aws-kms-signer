@@ -1,4 +1,4 @@
-import { ethers } from "ethers";
+import { recoverAddress, keccak256 } from "ethers";
 import { KMS } from "aws-sdk";
 import * as asn1 from "asn1.js";
 import BN from "bn.js";
@@ -61,7 +61,7 @@ export function getEthereumAddress(publicKey: Buffer): string {
   // more info: https://www.oreilly.com/library/view/mastering-ethereum/9781491971932/ch04.html
   pubKeyBuffer = pubKeyBuffer.slice(1, pubKeyBuffer.length);
 
-  const address = ethers.utils.keccak256(pubKeyBuffer); // keccak256 hash of publicKey
+  const address = keccak256(pubKeyBuffer); // keccak256 hash of publicKey
   const EthAddr = `0x${address.slice(-40)}`; // take last 20 bytes as ethereum adress
   return EthAddr;
 }
@@ -91,7 +91,7 @@ export async function requestKmsSignature(
 }
 
 function recoverPubKeyFromSig(msg: Buffer, r: BN, s: BN, v: number) {
-  return ethers.utils.recoverAddress(`0x${msg.toString("hex")}`, {
+  return recoverAddress(`0x${msg.toString("hex")}`, {
     r: `0x${r.toString("hex")}`,
     s: `0x${s.toString("hex")}`,
     v,
