@@ -7,12 +7,17 @@ import { AwsKmsSignerCredentials } from "../index";
 /* this asn1.js library has some funky things going on */
 /* eslint-disable func-names */
 
-const EcdsaSigAsnParse: { decode: (asnStringBuffer: Buffer, format: "der") => { r: BN; s: BN } } =
+const EcdsaSigAsnParse: {
+  decode: (asnStringBuffer: Buffer, format: "der") => { r: BN; s: BN };
+} =
+  // rome-ignore lint/suspicious/noExplicitAny: <explanation>
   asn1.define("EcdsaSig", function (this: any) {
     // parsing this according to https://tools.ietf.org/html/rfc3279#section-2.2.3
     this.seq().obj(this.key("r").int(), this.key("s").int());
   });
-const EcdsaPubKey = asn1.define("EcdsaPubKey", function (this: any) {
+
+// rome-ignore lint/suspicious/noExplicitAny: <explanation>
+const EcdsaPubKey = asn1.define("EcdsaPubKey", function (this: any): void {
   // parsing this according to https://tools.ietf.org/html/rfc5480#section-2
   this.seq().obj(
     this.key("algo").seq().obj(this.key("a").objid(), this.key("b").objid()),
