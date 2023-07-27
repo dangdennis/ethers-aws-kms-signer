@@ -7,15 +7,14 @@ import {
 } from "./util/aws-kms-utils";
 import { KMSClient } from "@aws-sdk/client-kms";
 
-export class AwsKmsSigner implements ethers.AbstractSigner {
+export class AwsKmsSigner extends ethers.AbstractSigner {
   readonly kms: KMSClient;
   readonly keyId: string;
-  readonly provider: ethers.Provider | null;
   ethereumAddress: string;
 
   constructor(keyId: string, kms: KMSClient, provider: ethers.Provider) {
+    super(provider);
     this.keyId = keyId;
-    this.provider = provider;
     this.kms = kms;
   }
 
@@ -62,45 +61,12 @@ export class AwsKmsSigner implements ethers.AbstractSigner {
     return new AwsKmsSigner(this.keyId, this.kms, provider);
   }
 
-  getNonce(blockTag?: ethers.BlockTag): Promise<number> {
-    throw new Error("Method not implemented.");
-  }
-
-  populateCall(
-    tx: ethers.TransactionRequest
-  ): Promise<ethers.TransactionLike<string>> {
-    throw new Error("Method not implemented.");
-  }
-
-  populateTransaction(
-    tx: ethers.TransactionRequest
-  ): Promise<ethers.TransactionLike<string>> {
-    throw new Error("Method not implemented.");
-  }
-
-  estimateGas(tx: ethers.TransactionRequest): Promise<bigint> {
-    throw new Error("Method not implemented.");
-  }
-
-  resolveName(name: string): Promise<string> {
-    throw new Error("Method not implemented.");
-  }
-
-  sendTransaction(
-    tx: ethers.TransactionRequest
-  ): Promise<ethers.TransactionResponse> {
-    throw new Error("Method not implemented.");
-  }
-
-  call(tx: ethers.TransactionRequest): Promise<string> {
-    throw new Error("Method not implemented.");
-  }
-
   signTypedData(
-    domain: ethers.TypedDataDomain,
-    types: Record<string, ethers.TypedDataField[]>,
-    value: Record<string, any>
+    _domain: ethers.TypedDataDomain,
+    _types: Record<string, ethers.TypedDataField[]>,
+    // rome-ignore lint/suspicious/noExplicitAny: <explanation>
+    _value: Record<string, any>
   ): Promise<string> {
-    throw new Error("Method not implemented.");
+    throw new Error("not implemented");
   }
 }
