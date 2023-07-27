@@ -25,7 +25,8 @@ describe("aws kms signer", () => {
     expect(address).toEqual(expectedKeyAddress);
   });
 
-  test("successfully signs and sends a transaction to a hardhat node", async () => {
+  // @todo setup hardhat for CI testing
+  test.skip("successfully signs and sends a transaction to a hardhat node", async () => {
     const contractAddress = "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0"; // generated after deploying a contract to hardhat
     const YomiGardens = new Contract(contractAddress, YomiGardensAbi, signer);
 
