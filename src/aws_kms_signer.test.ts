@@ -2,7 +2,7 @@ import { KMSClient } from "@aws-sdk/client-kms";
 import { describe, expect, test } from "vitest";
 import { config } from "dotenv";
 import { AwsKmsSigner } from ".";
-import { Contract, JsonRpcProvider } from "ethers";
+import { Contract, JsonRpcProvider, TransactionResponse } from "ethers";
 import { abi as YomiGardensAbi } from "./YomiGardens.json";
 
 describe("aws kms signer", () => {
@@ -29,9 +29,9 @@ describe("aws kms signer", () => {
     const contractAddress = "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0"; // generated after deploying a contract to hardhat
     const YomiGardens = new Contract(contractAddress, YomiGardensAbi, signer);
 
-    const tx = await YomiGardens.safeMint(expectedKeyAddress, 2, {
+    const tx = (await YomiGardens.safeMint(expectedKeyAddress, 2, {
       gasLimit: "1000000",
-    });
+    })) as TransactionResponse;
 
     await tx.wait();
   });
