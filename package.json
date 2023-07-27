@@ -5,6 +5,7 @@
   "license": "MIT",
   "repository": "rjchow/ethers-aws-kms-signer",
   "main": "dist/index.js",
+  "types": "dist/ts/src/index.d.ts",
   "author": {
     "name": "RJ Chow",
     "email": "me@rjchow.com",
@@ -15,12 +16,11 @@
     "src"
   ],
   "scripts": {
-    "build": "tsc --emitDeclarationOnly",
+    "build": "tsc",
     "check": "npx rome check src/",
     "format": "npx rome format src/ --write",
     "test": "npx vitest run"
   },
-  "types": "dist/ts/src/index.d.ts",
   "keywords": [],
   "dependencies": {
     "@aws-sdk/client-kms": "3.378.0",

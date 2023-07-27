@@ -1,7 +1,14 @@
 {
+  "include": [
+    "src/**/*.ts"
+  ],
+  "exclude": [
+    "**/*.test.ts",
+    "node_modules",
+  ],
   "compilerOptions": {
     "resolveJsonModule": true,
-    "outDir": "dist/ts",
+    "outDir": "dist",
     "target": "esnext",
     "module": "esnext",
     "moduleResolution": "node",
