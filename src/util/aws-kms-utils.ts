@@ -97,9 +97,10 @@ export async function requestKmsSignature(
     if (!signature) {
       throw new Error("AWS KMS call failed: no signature");
     }
-    return findEthereumSig(signature as Buffer);
+
+    return findEthereumSig(Buffer.from(signature));
   } catch (error) {
-    throw new Error(`AWS KMS call failed: ${error.message}`);
+    throw new Error(`AWS KMS call failed: ${error}`);
   }
 }
 

@@ -18,22 +18,21 @@ describe("aws kms signer", () => {
   });
   const provider = new JsonRpcProvider("http://127.0.0.1:8545/");
   const signer = new AwsKmsSigner(process.env.KEY_ID, kms, provider);
+  const expectedKeyAddress = "0x7ca2eb4ba8b49b543a00fc50ba8f2c5c1150d17b";
 
   test("can get the ethereum address", async () => {
     const address = await signer.getAddress();
-    expect(address).toEqual("0x7ca2eb4ba8b49b543a00fc50ba8f2c5c1150d17b");
+    expect(address).toEqual(expectedKeyAddress);
   });
 
   test("successfully signs and sends a transaction to a hardhat node", async () => {
     const contractAddress = "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0"; // generated after deploying a contract to hardhat
     const YomiGardens = new Contract(contractAddress, YomiGardensAbi, signer);
 
-    const tx = await YomiGardens.safeMint(contractAddress, 1, {
+    const tx = await YomiGardens.safeMint(expectedKeyAddress, 2, {
       gasLimit: "1000000",
     });
 
     await tx.wait();
-
-    console.log("tx", tx);
   });
 });
