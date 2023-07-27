@@ -1,15 +1,15 @@
 {
   "name": "ethers-aws-kms-signer",
-  "version": "1.3.2",
+  "version": "0.1.0",
   "description": "An Ethers.js compatible signer that connects to AWS KMS",
   "license": "MIT",
-  "repository": "rjchow/ethers-aws-kms-signer",
+  "repository": "dangdennis/ethers-aws-kms-signer",
   "main": "dist/index.js",
-  "types": "dist/ts/src/index.d.ts",
+  "types": "dist/index.d.ts",
   "author": {
-    "name": "RJ Chow",
-    "email": "me@rjchow.com",
-    "url": "https://github.com/rjchow"
+    "email": "dennis.dang@hey.com",
+    "name": "Dennis Dang",
+    "url": "https://github.com/dangdennis"
   },
   "files": [
     "dist",
@@ -19,22 +19,19 @@
     "build": "tsc",
     "check": "npx rome check src/",
     "format": "npx rome format src/ --write",
-    "test": "npx vitest run"
+    "test": "npx tsc --project tsconfig.tests.json && npx vitest run"
   },
   "keywords": [],
   "dependencies": {
     "@aws-sdk/client-kms": "3.378.0",
     "@types/node": "20.4.5",
     "asn1.js": "5.4.1",
-    "aws-sdk": "2.922.0",
     "bn.js": "5.2.0",
     "dotenv": "16.3.1",
     "ethers": "6.6.5"
   },
   "devDependencies": {
     "@types/asn1": "0.2.0",
-    "@types/debug": "4.1.5",
-    "@types/jest": "26.0.23",
     "rome": "12.1.3",
     "typescript": "5.1.6",
     "vitest": "0.33.0"

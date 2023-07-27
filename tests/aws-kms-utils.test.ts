@@ -1,6 +1,6 @@
 import { describe, test, expect } from "vitest";
 import BN from "bn.js";
-import { getEthereumAddress, determineCorrectV, findEthereumSig } from "./aws-kms-utils";
+import { getEthereumAddress, determineCorrectV, findEthereumSig } from "../src/util/aws-kms-utils";
 
 describe("getEthereumAddress", () => {
   test("should work correctly", () => {
@@ -10,6 +10,7 @@ describe("getEthereumAddress", () => {
     );
     expect(getEthereumAddress(samplePubKey)).toBe("0xe94e130546485b928c9c9b9a5e69eb787172952e");
   });
+
   test("should fail on truncated key", () => {
     const samplePubKey = Buffer.from(
       "3056301006072a8648ce3d020106052b8104000a03420004f2de8ae7a9f594fb0d399abfb58639f43fb80960a1ed7c6e257c11",
@@ -25,6 +26,7 @@ describe("findEthereumSig", () => {
       "304502203f25afdb7ed67094101cd71109261886db9abbf1ba20cc53aec20ba01c2e6baa022100ab0de6d40f8960c252fc6f21e35e8369126fb19033f10953c42a61766635df82",
       "hex",
     );
+
     expect(JSON.stringify(findEthereumSig(sampleSignature))).toBe(
       '{"r":"3f25afdb7ed67094101cd71109261886db9abbf1ba20cc53aec20ba01c2e6baa","s":"54f2192bf0769f3dad0390de1ca17c95a83f2b567b5796e7fba7fd166a0061bf"}',
     );
@@ -45,6 +47,7 @@ describe("determineCorrectV", () => {
       v: 28,
     });
   });
+  
   test("should get correct V if it is 27", () => {
     const sampleMsg = Buffer.from(
       "a1de988600a42c4b4ab089b619297c17d53cffae5d5120d82d8a92d0bb3b78f2",

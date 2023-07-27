@@ -1,0 +1,45 @@
+# Files and directories to ignore when publishing to npm
+
+# Development and build-related files
+node_modules/
+build/
+coverage/
+*.log
+npm-debug.log*
+yarn-error.log*
+yarn.lock
+package-lock.json
+tsconfig.json
+tsconfig.build.json
+
+# Source files
+src/
+
+# Version control and CI related files
+.git/
+.gitignore
+.travis.yml
+appveyor.yml
+
+# Documentation and configuration files
+docs/
+config/
+*.md
+
+# Test files and directories
+test/
+tests/
+__tests__/
+
+# macOS related files
+.DS_Store
+
+# Editor specific files
+.vscode/
+.idea/
+*.sublime-*
+*.swp
+*.swo
+
+# Other miscellaneous files
+*.
