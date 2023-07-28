@@ -75,21 +75,13 @@ export function findEthereumSig(signature: Buffer) {
   const secp256k1N = BigInt(
     "0xfffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141"
   ); // max value on the curve
+
   const secp256k1halfN = secp256k1N / 2n; // half of the curve
+
   // Because of EIP-2 not all elliptic curve signatures are accepted
   // the value of s needs to be SMALLER than half of the curve
   // i.e. we need to flip s if it's greater than half of the curve
   // if s is less than half of the curve, we're on the "good" side of the curve, we can just return
-
-  // console.log({
-  //   r,
-  //   s,
-  //   secp256k1N,
-  //   bigIntsecp256k1N: BigInt(secp256k1N),
-  //   secp256k1halfN,
-  //   bigIntsecp256k1halfN: BigInt(secp256k1halfN),
-  // });
-
   return { r, s: s > secp256k1halfN ? secp256k1N - s : s };
 }
 
