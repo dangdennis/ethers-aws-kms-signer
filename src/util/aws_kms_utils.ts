@@ -1,7 +1,12 @@
 import { recoverAddress, keccak256 } from "ethers";
-import { KMSClient, SignCommand, GetPublicKeyCommand } from "@aws-sdk/client-kms";
+import {
+  KMSClient,
+  SignCommand,
+  GetPublicKeyCommand,
+} from "@aws-sdk/client-kms";
 import * as asn1 from "asn1.js";
-import BN from "bn.js";
+
+type BN = bigint;
 
 /* this asn1.js library has some funky things going on */
 /* eslint-disable func-names */
@@ -20,11 +25,14 @@ const EcdsaPubKey = asn1.define("EcdsaPubKey", function (this: any): void {
   // parsing this according to https://tools.ietf.org/html/rfc5480#section-2
   this.seq().obj(
     this.key("algo").seq().obj(this.key("a").objid(), this.key("b").objid()),
-    this.key("pubKey").bitstr(),
+    this.key("pubKey").bitstr()
   );
 });
 
-export async function sign(input: { digest: Buffer; keyId: string }, kms: KMSClient) {
+export async function sign(
+  input: { digest: Buffer; keyId: string },
+  kms: KMSClient
+) {
   const res = await kms.send(
     new SignCommand({
       // key id or 'Alias/<alias>'
@@ -33,7 +41,7 @@ export async function sign(input: { digest: Buffer; keyId: string }, kms: KMSCli
       // 'ECDSA_SHA_256' is the one compatible with ECC_SECG_P256K1.
       SigningAlgorithm: "ECDSA_SHA_256",
       MessageType: "DIGEST",
-    }),
+    })
   );
   return res.Signature;
 }
@@ -61,20 +69,33 @@ export function getEthereumAddress(publicKey: Buffer): string {
 
 export function findEthereumSig(signature: Buffer) {
   const decoded = EcdsaSigAsnParse.decode(signature, "der");
-  const { r, s } = decoded;
+  const r = BigInt(decoded.r);
+  const s = BigInt(decoded.s);
 
-  const secp256k1N = new BN("fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141", 16); // max value on the curve
-  const secp256k1halfN = secp256k1N.div(new BN(2)); // half of the curve
+  const secp256k1N = BigInt(
+    "0xfffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141"
+  ); // max value on the curve
+  const secp256k1halfN = secp256k1N / 2n; // half of the curve
   // Because of EIP-2 not all elliptic curve signatures are accepted
   // the value of s needs to be SMALLER than half of the curve
   // i.e. we need to flip s if it's greater than half of the curve
   // if s is less than half of the curve, we're on the "good" side of the curve, we can just return
-  return { r, s: s.gt(secp256k1halfN) ? secp256k1N.sub(s) : s };
+
+  // console.log({
+  //   r,
+  //   s,
+  //   secp256k1N,
+  //   bigIntsecp256k1N: BigInt(secp256k1N),
+  //   secp256k1halfN,
+  //   bigIntsecp256k1halfN: BigInt(secp256k1halfN),
+  // });
+
+  return { r, s: s > secp256k1halfN ? secp256k1N - s : s };
 }
 
 export async function requestKmsSignature(
   input: { plaintext: Buffer; keyId: string },
-  kms: KMSClient,
+  kms: KMSClient
 ) {
   try {
     const signature = await sign(
@@ -82,7 +103,7 @@ export async function requestKmsSignature(
         digest: input.plaintext,
         keyId: input.keyId,
       },
-      kms,
+      kms
     );
     if (!signature) {
       throw new Error("AWS KMS call failed: no signature");
@@ -94,15 +115,20 @@ export async function requestKmsSignature(
   }
 }
 
-function recoverPubKeyFromSig(msg: Buffer, r: BN, s: BN, v: number) {
+function recoverPubKeyFromSig(msg: Buffer, r: bigint, s: bigint, v: number) {
   return recoverAddress(`0x${msg.toString("hex")}`, {
-    r: `0x${r.toString("hex")}`,
-    s: `0x${s.toString("hex")}`,
+    r: `0x${r.toString(16)}`,
+    s: `0x${s.toString(16)}`,
     v,
   });
 }
 
-export function determineCorrectV(msg: Buffer, r: BN, s: BN, expectedEthAddr: string) {
+export function determineCorrectV(
+  msg: Buffer,
+  r: bigint,
+  s: bigint,
+  expectedEthAddr: string
+) {
   // This is the wrapper function to find the right v value
   // There are two matching signatues on the elliptic curve
   // we need to find the one that matches to our public key

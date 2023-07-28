@@ -4,7 +4,7 @@ import {
   getEthereumAddress,
   requestKmsSignature,
   determineCorrectV,
-} from "./util/aws-kms-utils";
+} from "./util/aws_kms_utils";
 import { KMSClient } from "@aws-sdk/client-kms";
 
 export class AwsKmsSigner extends ethers.AbstractSigner {
@@ -33,14 +33,14 @@ export class AwsKmsSigner extends ethers.AbstractSigner {
         keyId: this.keyId,
         plaintext: digestBuffer,
       },
-      this.kms,
+      this.kms
     );
     const ethAddr = await this.getAddress();
     const { v } = determineCorrectV(digestBuffer, sig.r, sig.s, ethAddr);
     return ethers.Signature.from({
       v,
-      r: `0x${sig.r.toString("hex")}`,
-      s: `0x${sig.s.toString("hex")}`,
+      r: `0x${sig.r.toString(16)}`,
+      s: `0x${sig.s.toString(16)}`,
     }).serialized;
   }
 
@@ -51,7 +51,7 @@ export class AwsKmsSigner extends ethers.AbstractSigner {
   async signTransaction(transaction: ethers.TransactionLike): Promise<string> {
     const unsignedTx = await Transaction.from(transaction);
     const transactionSignature = await this._signDigest(
-      ethers.keccak256(unsignedTx.unsignedSerialized),
+      ethers.keccak256(unsignedTx.unsignedSerialized)
     );
     unsignedTx.signature = transactionSignature;
     return unsignedTx.serialized;
@@ -65,7 +65,7 @@ export class AwsKmsSigner extends ethers.AbstractSigner {
     _domain: ethers.TypedDataDomain,
     _types: Record<string, ethers.TypedDataField[]>,
     // rome-ignore lint/suspicious/noExplicitAny: <explanation>
-    _value: Record<string, any>,
+    _value: Record<string, any>
   ): Promise<string> {
     throw new Error("not implemented");
   }
